@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Medical Assistant{% endblock %}</title>
+    <meta name="description"
+        content="{% block description %}AI-powered disease prediction, hospital recommendations, and medical history tracking{% endblock %}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/logo.svg') }}" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('main.index') }}" class="nav-brand">
+                <span class="brand-text">SMAT<span class="brand-accent">AI</span></span>
+            </a>
+
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{{ url_for('main.index') }}"
+                        class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}">
+                        Home</a></li>
+                <li><a href="{{ url_for('main.diseases') }}"
+                        class="nav-link {% if request.endpoint == 'main.diseases' %}active{% endif %}">
+                        Diseases</a></li>
+                {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('main.checker') }}"
+                        class="nav-link {% if request.endpoint == 'main.checker' %}active{% endif %}">
+                        Symptom Checker</a></li>
+                <li><a href="{{ url_for('main.hospitals') }}"
+                        class="nav-link {% if request.endpoint == 'main.hospitals' %}active{% endif %}">
+                        Hospitals</a></li>
+                <li><a href="{{ url_for('main.history') }}"
+                        class="nav-link {% if request.endpoint == 'main.history' %}active{% endif %}">
+                        History</a></li>
+                <li class="nav-dropdown">
+                    <button class="nav-link dropdown-trigger">
+                        <i class="fas fa-user-circle"></i> {{ current_user.username }}
+                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
+                        {% if current_user.is_admin %}
+                        <li class="divider"></li>
+                        <li><a href="{{ url_for('admin.dashboard') }}">Admin Panel</a></li>
+                        {% endif %}
+                        <li class="divider"></li>
+                        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <li><a href="{{ url_for('auth.login') }}" class="nav-link btn-nav-login">
+                        Login</a></li>
+                <li><a href="{{ url_for('auth.register') }}" class="nav-link btn-nav-register">
+                        Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container" id="flashContainer">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible">
+            <i
+                class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+            {{ message }}
+            <button class="alert-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="main-content {% block main_class %}{% endblock %}">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>SMAT<span class="brand-accent">AI</span></h3>
+                    <p>AI-powered medical assistant for smarter health decisions.</p>
+                    <p class="footer-disclaimer"><i class="fas fa-info-circle"></i> <strong>Disclaimer:</strong> This
+                        tool is for informational purposes only. Always consult a qualified medical professional.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                        <li><a href="{{ url_for('main.diseases') }}">Disease Library</a></li>
+                        {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('main.checker') }}">Symptom Checker</a></li>
+                        <li><a href="{{ url_for('main.hospitals') }}">Hospitals</a></li>
+                        {% else %}
+                        <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                        <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="footer-info">
+                    <h4>Emergency Numbers</h4>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> National Emergency: <strong>112</strong></li>
+                        <li><i class="fas fa-ambulance"></i> Ambulance: <strong>108</strong></li>
+                        <li><i class="fas fa-heartbeat"></i> AIIMS: <strong>011-26588500</strong></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Smart Medical Assistant (SMAT). Built with <i class="fas fa-heart text-danger"></i> using
+                    Flask & AI.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

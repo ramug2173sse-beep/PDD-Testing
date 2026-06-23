@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Hospitals - SMAT AI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Hospital Directory</h1>
+        <p>Find the best hospitals based on your needs</p>
+    </div>
+
+    <!-- Filters -->
+    <form method="GET" class="filter-form">
+        <div class="filter-grid">
+            <div class="form-group">
+                <label>City</label>
+                <select name="city" class="form-control form-select">
+                    <option value="">All Cities</option>
+                    {% for c in cities %}
+                    <option value="{{ c.city }}" {% if c.city==city %}selected{% endif %}>{{ c.city }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Specialty</label>
+                <input type="text" name="specialty" class="form-control" placeholder="e.g. Cardiology"
+                    value="{{ specialty }}">
+            </div>
+            <div class="form-group form-check-group">
+                <label class="form-check">
+                    <input type="checkbox" name="emergency" value="1" {% if emergency %}checked{% endif %}>
+                    <span>Emergency Services Only</span>
+                </label>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <a href="{{ url_for('main.hospitals') }}" class="btn btn-outline" style="margin-left:0.5rem">
+                    Clear
+                </a>
+            </div>
+        </div>
+    </form>
+
+    {% if hospitals %}
+    <p class="results-count"><strong>{{ hospitals | length }}</strong> hospitals found</p>
+    <div class="hospitals-grid-page">
+        {% for h in hospitals %}
+        <div class="hospital-card-lg">
+            <div class="hcl-header">
+                <div>
+                    <h3>{{ h.name }}</h3>
+                    <p class="hcl-location"><i class="fas fa-map-marker-alt"></i> {{ h.city }}, {{ h.state }}</p>
+                </div>
+                <div class="hcl-rating">
+                    <div class="stars">
+                        {% for i in range(5) %}
+                        <i class="fas fa-star {% if i < h.rating | int %}filled{% endif %}"></i>
+                        {% endfor %}
+                    </div>
+                    <span class="rating-val">{{ h.rating }}</span>
+                </div>
+            </div>
+            <p class="hcl-address"><i class="fas fa-building"></i> {{ h.address }}</p>
+            <div class="hcl-contact">
+                {% if h.phone %}<a href="tel:{{ h.phone }}"><i class="fas fa-phone"></i> {{ h.phone }}</a>{% endif %}
+                {% if h.email %}<a href="mailto:{{ h.email }}"><i class="fas fa-envelope"></i> {{ h.email }}</a>{% endif
+                %}
+            </div>
+            <div class="hcl-badges">
+                {% if h.emergency %}<span class="badge badge-danger"><i class="fas fa-ambulance"></i> 24/7
+                    Emergency</span>{% endif %}
+                {% for spec in h.specialties.split(',')[:4] %}
+                <span class="badge badge-info">{{ spec.strip() }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <h3>No hospitals found</h3>
+    <p>Try adjusting your filters.</p>
+</div>
+{% endif %}
+</div>
+{% endblock %}

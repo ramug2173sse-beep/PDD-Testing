@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Manage Symptoms - Admin{% endblock %}
+
+{% block content %}
+<div class="container admin-container">
+    <div class="admin-back"><a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline btn-sm">Dashboard</a>
+    </div>
+    <div class="page-header">
+        <h1>Manage Symptoms</h1>
+    </div>
+    <div class="admin-form-inline">
+        <form action="{{ url_for('admin.add_symptom') }}" method="POST" class="inline-add-form">
+            <h3>Add New Symptom</h3>
+            <div class="form-row">
+                <div class="form-group"><label>Name *</label><input type="text" name="name" class="form-control"
+                        required placeholder="e.g. chest_pain"></div>
+                <div class="form-group"><label>Category</label><input type="text" name="category" class="form-control"
+                        placeholder="e.g. Cardiovascular"></div>
+                <div class="form-group"><label>Severity</label>
+                    <select name="severity_level" class="form-control form-select">
+                        <option value="mild">Mild</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="severe">Severe</option>
+                    </select>
+                </div>
+                <div class="form-group"><button type="submit" class="btn btn-primary">
+                        Add</button></div>
+            </div>
+        </form>
+    </div>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Severity</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in symptoms %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ s.name | replace('_', ' ') | title }}</td>
+                <td>{{ s.category or '-' }}</td>
+                <td><span class="severity-badge {{ s.severity_level }}">{{ s.severity_level | title }}</span></td>
+                <td><small>{{ (s.description or '-')[:60] }}</small></td>
+                <td>
+                    <form action="{{ url_for('admin.delete_symptom', symptom_id=s.id) }}" method="POST"
+                        style="display:inline" onsubmit="return confirm('Delete {{ s.name }}?')">
+                        <button class="btn btn-xs btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

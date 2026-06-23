@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Home - Smart Medical Assistant{% endblock %}
+{% block body_class %}page-home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content container">
+        <div class="hero-text">
+            <div class="hero-badge">AI-Powered Health Assistant</div>
+            <h1>Your Smart <span class="gradient-text">Medical</span> Companion</h1>
+            <p class="hero-sub">Describe your symptoms and get instant AI-powered disease predictions, hospital
+                recommendations, and personalized health insights.</p>
+            <div class="hero-actions">
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('main.checker') }}" class="btn btn-primary btn-lg">
+                    Check Symptoms Now
+                </a>
+                <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline btn-lg">
+                    My Dashboard
+                </a>
+                {% else %}
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">
+                    Get Started Free
+                </a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline btn-lg">
+                    Sign In
+                </a>
+                {% endif %}
+            </div>
+            <div class="hero-disclaimer">
+                For informational purposes only. Always consult a medical professional.
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-card floating">
+                <div class="hcard-header">AI Analysis</div>
+                <div class="hcard-body">
+                    <div class="symptom-pill">🌡️ High Fever</div>
+                    <div class="symptom-pill">😮‍💨 Cough</div>
+                    <div class="symptom-pill">🤕 Headache</div>
+                </div>
+                <div class="hcard-result">
+                    <span class="result-label">Most Likely:</span>
+                    <span class="result-disease">Influenza</span>
+                    <span class="result-confidence">92% match</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"></div>
+                <div class="stat-number">{{ diseases_count }}+</div>
+                <div class="stat-label">Diseases in Database</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"></div>
+                <div class="stat-number">{{ symptoms_count }}+</div>
+                <div class="stat-label">Trackable Symptoms</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"></div>
+                <div class="stat-number">{{ hospitals_count }}+</div>
+                <div class="stat-label">Recommended Hospitals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"></div>
+                <div class="stat-number">95%+</div>
+                <div class="stat-label">Prediction Accuracy</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Everything You Need</h2>
+            <p>A complete health companion in one platform</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-stethoscope"></i></div>
+                <h3>Symptom Checker</h3>
+                <p>Select your symptoms from 55+ options and get instant AI-powered disease predictions with confidence
+                    scores.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-hospital-alt"></i></div>
+                <h3>Hospital Finder</h3>
+                <p>Get personalized hospital recommendations based on your predicted condition and specialist
+                    requirements.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-file-medical-alt"></i></div>
+                <h3>Medical History</h3>
+                <p>Track all your past predictions, diagnoses, medications, and health records in one secure place.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-shield-virus"></i></div>
+                <h3>Disease Library</h3>
+                <p>Browse detailed information on 30+ diseases including symptoms, treatments, and prevention tips.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                <h3>ML-Powered AI</h3>
+                <p>Backed by a Random Forest machine learning model trained on comprehensive medical symptom data.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                <h3>Secure & Private</h3>
+                <p>Your health data is encrypted and stored securely. Only you can access your medical records.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Disease Showcase -->
+{% if recent_diseases %}
+<section class="diseases-preview-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Disease Library</h2>
+            <p>Browse our comprehensive database</p>
+        </div>
+        <div class="disease-cards-grid">
+            {% for disease in recent_diseases %}
+            <a href="{{ url_for('main.diseases') }}" class="disease-preview-card severity-{{ disease.severity }}">
+                <div class="dp-category">{{ disease.category }}</div>
+                <h4>{{ disease.name }}</h4>
+                <span class="severity-badge {{ disease.severity }}">{{ disease.severity | title }}</span>
+            </a>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('main.diseases') }}" class="btn btn-outline">
+                <i class="fas fa-arrow-right"></i> View All Diseases
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-card">
+            <h2>Ready to Check Your Health?</h2>
+            <p>Get AI-powered disease predictions in under 60 seconds</p>
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('main.checker') }}" class="btn btn-white btn-lg">
+                <i class="fas fa-stethoscope"></i> Start Symptom Checker
+            </a>
+            {% else %}
+            <a href="{{ url_for('auth.register') }}" class="btn btn-white btn-lg">
+                <i class="fas fa-user-plus"></i> Create Free Account
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

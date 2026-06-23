@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block title %}Symptom Checker - SMAT AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .checker-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .selected-count {
+        font-size: 0.9rem;
+        color: var(--primary);
+        font-weight: 600;
+    }
+
+    /* Floating Action Bar */
+    .floating-checker-bar {
+        position: fixed;
+        bottom: -100px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 600px;
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--primary);
+        border-radius: 50px;
+        padding: 0.75rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 1000;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .floating-checker-bar.visible {
+        bottom: 2rem;
+    }
+
+    .flo-info {
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .flo-count {
+        color: var(--primary-light);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="checker-container">
+    <div class="page-header">
+        <h1>Symptom Checker</h1>
+        <p>Select all symptoms you are currently experiencing. Select at least 3 for best results.</p>
+    </div>
+
+    <!-- Search + Selected count -->
+    <div class="checker-toolbar">
+        <div class="search-box">
+            <input type="text" id="symptomSearch" placeholder="Search symptoms..." class="form-control">
+        </div>
+        <div class="selected-info">
+            <span class="selected-count" id="selectedCount">0</span> symptoms selected
+            <button class="btn btn-sm btn-outline" id="clearAll" style="margin-left:1rem">
+                Clear All
+            </button>
+        </div>
+    </div>
+
+    <!-- Selected symptoms pills -->
+    <div class="selected-pills" id="selectedPills"></div>
+
+    <!-- Symptom categories -->
+    {% for category, syms in categories.items() %}
+    <div class="symptom-category" data-category="{{ category }}">
+        <h3 class="category-header" onclick="toggleCategory(this)">
+            <span>{{ category }}</span>
+            <span class="cat-count">({{ syms | length }})</span>
+            <i class="fas fa-chevron-down cat-toggle-icon"></i>
+        </h3>
+        <div class="symptoms-grid cat-content">
+            {% for symptom in syms %}
+            <label class="symptom-item" data-name="{{ symptom.name }}" data-severity="{{ symptom.severity_level }}">
+                <input type="checkbox" class="symptom-checkbox" name="symptom" value="{{ symptom.name }}"
+                    id="sym_{{ symptom.id }}">
+                <span class="symptom-label">
+                    <span class="symptom-name">{{ symptom.name | replace('_', ' ') | title }}</span>
+                    <span class="severity-dot {{ symptom.severity_level }}"></span>
+                </span>
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Legend -->
+    <div class="severity-legend">
+        <span><span class="severity-dot mild"></span> Mild</span>
+        <span><span class="severity-dot moderate"></span> Moderate</span>
+        <span><span class="severity-dot severe"></span> Severe</span>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="checker-submit">
+        <button class="btn btn-primary btn-lg" id="predictBtn" onclick="submitPrediction()">
+            <i class="fas fa-robot"></i> Predict Disease
+        </button>
+        <p class="submit-note">Select at least 3 symptoms to enable prediction</p>
+    </div>
+
+    <!-- Floating Bar -->
+    <div class="floating-checker-bar" id="floatingBar">
+        <div class="flo-info">
+            <span class="flo-count" id="floCount">0</span> Symptoms Selected
+        </div>
+        <button class="btn btn-primary" id="predictBtnFlo" onclick="submitPrediction()">
+            Predict Now
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize the checker using the functions in main.js
+        if (typeof initChecker === 'function') {
+            initChecker();
+        }
+
+        // Connect the Predict button to the submitPrediction function in main.js
+        const predictBtn = document.getElementById('predictBtn');
+        if (predictBtn) {
+            predictBtn.addEventListener('click', () => {
+                if (typeof submitPrediction === 'function') {
+                    submitPrediction();
+                }
+            });
+        }
+
+        // Search functionality
+        const searchInput = document.getElementById('symptomSearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                if (typeof searchSymptoms === 'function') {
+                    searchSymptoms();
+                }
+            });
+        }
+
+        // Clear All functionality
+        const clearBtn = document.getElementById('clearAll');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                if (typeof selectedSymptoms !== 'undefined') {
+                    selectedSymptoms.clear();
+                    document.querySelectorAll('.symptom-checkbox').forEach(cb => {
+                        cb.checked = false;
+                        cb.closest('.symptom-item')?.classList.remove('selected');
+                    });
+                    if (typeof updateSelectedUI === 'function') {
+                        updateSelectedUI();
+                    }
+                }
+            });
+        }
+    });
+
+    // Keep toggleCategory if it's not in main.js (it's slightly different)
+    function toggleCategory(header) {
+        const content = header.nextElementSibling;
+        const icon = header.querySelector('.cat-toggle-icon');
+        if (content) {
+            const isHidden = content.style.display === 'none';
+            content.style.display = isHidden ? 'grid' : 'none';
+            if (icon) {
+                icon.classList.toggle('fa-chevron-down', !isHidden);
+                icon.classList.toggle('fa-chevron-up', isHidden);
+            }
+        }
+    }
+</script>
+{% endblock %}

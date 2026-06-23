@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% block title %}Medical History - SMAT AI{% endblock %}
+
+{% block content %}
+<div class="container history-container">
+    <div class="page-header">
+        <h1>History</h1>
+        <a href="{{ url_for('main.checker') }}" class="btn btn-primary">
+            New Prediction
+        </a>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('predictions', this)">
+            AI Predictions ({{ total_count }})
+        </button>
+        <button class="tab-btn" onclick="showTab('records', this)">
+            Medical Records ({{ medical_records | length }})
+        </button>
+    </div>
+
+    <!-- Predictions Tab -->
+    <div id="tab-predictions" class="tab-content active">
+        {% if predictions %}
+        <div class="history-table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Disease Predicted</th>
+                        <th>Confidence</th>
+                        <th>Symptoms</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in predictions %}
+                    <tr>
+                        <td>{{ loop.index + (page-1)*10 }}</td>
+                        <td>
+                            <strong>{{ p.predicted_disease_name or 'Unknown' }}</strong>
+                            {% if p.second_prediction %}
+                            <br><small class="text-muted">Alt: {{ p.second_prediction }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="mini-bar">
+                                <div class="mini-fill" data-width="{{ p.confidence_score or 0 }}%"></div>
+                            </div>
+                            <small>{{ (p.confidence_score or 0) | round(1) }}%</small>
+                        </td>
+                        <td><small>{{ p.symptoms_provided[:60] if p.symptoms_provided else '-' }}{% if
+                                p.symptoms_provided and p.symptoms_provided|length > 60 %}...{% endif %}</small></td>
+                        <td><small>{{ p.created_at.strftime('%d %b %Y') if p.created_at else '-' }}</small></td>
+                        <td>
+                            <a href="{{ url_for('main.results', pred_id=p.id) }}" class="btn btn-xs btn-outline">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% for pg in range(1, total_pages + 1) %}
+            <a href="{{ url_for('main.history', page=pg) }}" class="page-btn {% if pg == page %}active{% endif %}">{{ pg
+                }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="empty-state">
+            <h3>No predictions yet</h3>
+            <p>Use the Symptom Checker to get your first AI prediction.</p>
+            <a href="{{ url_for('main.checker') }}" class="btn btn-primary">Start Checking</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Medical Records Tab -->
+    <div id="tab-records" class="tab-content">
+        <div class="add-record-form">
+            <h3>Add Medical Record</h3>
+            <form action="{{ url_for('main.add_history') }}" method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Disease / Condition</label>
+                        <input type="text" name="disease_name" class="form-control" placeholder="e.g. Diabetes"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label>Diagnosis Date</label>
+                        <input type="date" name="diagnosis_date" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Recovery Status</label>
+                        <select name="recovery_status" class="form-control form-select">
+                            <option value="recovering">Recovering</option>
+                            <option value="recovered">Recovered</option>
+                            <option value="ongoing">Ongoing</option>
+                            <option value="chronic">Chronic</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Doctor Visited</label>
+                        <input type="text" name="doctor_visited" class="form-control" placeholder="Doctor's name">
+                    </div>
+                    <div class="form-group">
+                        <label>Hospital</label>
+                        <input type="text" name="hospital_visited" class="form-control" placeholder="Hospital name">
+                    </div>
+                    <div class="form-group">
+                        <label>Medications</label>
+                        <input type="text" name="medications" class="form-control" placeholder="e.g. Metformin 500mg">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea name="notes" rows="2" class="form-control" placeholder="Additional notes..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Save Record</button>
+            </form>
+        </div>
+
+        {% if medical_records %}
+        <div class="records-grid">
+            {% for r in medical_records %}
+            <div class="record-card status-{{ r.recovery_status }}">
+                <div class="rc-header">
+                    <h4>{{ r.disease_name }}</h4>
+                    <span class="status-badge {{ r.recovery_status }}">{{ r.recovery_status | title }}</span>
+                </div>
+                {% if r.diagnosis_date %}
+                <p><i class="fas fa-calendar-alt"></i> {{ r.diagnosis_date }}</p>
+                {% endif %}
+                {% if r.doctor_visited %}
+                <p><i class="fas fa-user-md"></i> Dr. {{ r.doctor_visited }}</p>
+                {% endif %}
+                {% if r.hospital_visited %}
+                <p><i class="fas fa-hospital"></i> {{ r.hospital_visited }}</p>
+                {% endif %}
+                {% if r.medications %}
+                <p><i class="fas fa-pills"></i> {{ r.medications }}</p>
+                {% endif %}
+                {% if r.notes %}
+                <p class="rc-notes"><i class="fas fa-sticky-note"></i> {{ r.notes }}</p>
+                {% endif %}
+                <form action="{{ url_for('main.delete_history', record_id=r.id) }}" method="POST"
+                    onsubmit="return confirm('Delete this record?')">
+                    <button type="submit" class="btn btn-xs btn-danger">Delete</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h3>No medical records yet</h3>
+            <p>Add your first medical record using the form above.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function showTab(name, btn) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('tab-' + name).classList.add('active');
+        btn.classList.add('active');
+    }
+</script>
+{% endblock %}

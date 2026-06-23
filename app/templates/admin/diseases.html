@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Manage Diseases - Admin{% endblock %}
+
+{% block content %}
+<div class="container admin-container">
+    <div class="admin-back"><a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline btn-sm">Dashboard</a>
+    </div>
+    <div class="page-header">
+        <h1>Manage Diseases</h1>
+        <a href="{{ url_for('admin.add_disease') }}" class="btn btn-primary">Add Disease</a>
+    </div>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Severity</th>
+                <th>Specialist</th>
+                <th>Contagious</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in diseases %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td><strong>{{ d.name }}</strong></td>
+                <td>{{ d.category or '-' }}</td>
+                <td><span class="severity-badge {{ d.severity }}">{{ d.severity | title }}</span></td>
+                <td>{{ d.specialist_required or '-' }}</td>
+                <td>{% if d.is_contagious %}<span class="badge badge-warning">Yes</span>{% else %}-{% endif %}</td>
+                <td>
+                    <a href="{{ url_for('admin.edit_disease', disease_id=d.id) }}"
+                        class="btn btn-xs btn-outline">Edit</a>
+                    <form action="{{ url_for('admin.delete_disease', disease_id=d.id) }}" method="POST"
+                        style="display:inline" onsubmit="return confirm('Delete {{ d.name }}?')">
+                        <button class="btn btn-xs btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Disease Library - SMAT AI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Disease Library</h1>
+        <p>Comprehensive information on 30+ diseases</p>
+    </div>
+    <!-- Filters -->
+    <form method="GET" class="filter-form">
+        <div class="filter-grid">
+            <div class="form-group">
+                <label>Category</label>
+                <select name="category" class="form-control form-select">
+                    <option value="">All Categories</option>
+                    {% for c in categories %}
+                    <option value="{{ c.category }}" {% if c.category==category %}selected{% endif %}>{{ c.category }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Severity</label>
+                <select name="severity" class="form-control form-select">
+                    <option value="">All Severities</option>
+                    {% for s in ['mild','moderate','severe','critical'] %}
+                    <option value="{{ s }}" {% if s==severity %}selected{% endif %}>{{ s | title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <a href="{{ url_for('main.diseases') }}" class="btn btn-outline" style="margin-left:0.5rem">Clear</a>
+            </div>
+        </div>
+    </form>
+    <div class="disease-grid-full">
+        {% for d in diseases %}
+        <a href="{{ url_for('main.disease_detail', disease_id=d.id) }}" class="disease-card-full">
+            <div class="dcf-header">
+                <span class="dcf-cat">{{ d.category }}</span>
+                <span class="severity-badge {{ d.severity }}">{{ d.severity | title }}</span>
+            </div>
+            <h3>{{ d.name }}</h3>
+            <p>{{ d.description[:120] if d.description else '' }}{% if d.description and d.description|length > 120
+                %}...{% endif %}</p>
+            <div class="dcf-footer">
+                {% if d.specialist_required %}<span>{{ d.specialist_required }}</span>{%
+                endif %}
+                {% if d.is_contagious %}<span class="contagious-badge">
+                    Contagious</span>{% endif %}
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

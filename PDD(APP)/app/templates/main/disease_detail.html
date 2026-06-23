@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ disease.name }} - SMAT AI{% endblock %}
+
+{% block content %}
+<div class="container disease-detail-container">
+    <a href="{{ url_for('main.diseases') }}" class="btn btn-outline btn-sm mb-3">
+        Back to Library
+    </a>
+    <div class="detail-header">
+        <div>
+            <div class="detail-meta">
+                <span class="meta-tag">{{ disease.category }}</span>
+                <span class="severity-badge {{ disease.severity }}">{{ disease.severity | title }}</span>
+                {% if disease.is_contagious %}<span class="contagious-badge">
+                    Contagious</span>{% endif %}
+            </div>
+            <h1>{{ disease.name }}</h1>
+            {% if disease.specialist_required %}
+            <p>Specialist: <strong>{{ disease.specialist_required }}</strong></p>
+            {% endif %}
+        </div>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('main.checker') }}" class="btn btn-primary">
+            Check My Symptoms
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="detail-grid">
+        <div class="detail-card">
+            <h3>About</h3>
+            <p>{{ disease.description or 'No description available.' }}</p>
+        </div>
+        {% if disease.treatment %}
+        <div class="detail-card">
+            <h3>Treatment</h3>
+            <p>{{ disease.treatment }}</p>
+        </div>
+        {% endif %}
+        {% if disease.prevention %}
+        <div class="detail-card">
+            <h3>Prevention</h3>
+            <p>{{ disease.prevention }}</p>
+        </div>
+        {% endif %}
+        {% if symptoms %}
+        <div class="detail-card full-width">
+            <h3>Common Symptoms</h3>
+            <div class="ds-grid">
+                {% for s in symptoms %}
+                <span class="ds-tag {{ s.severity_level }}">{{ s.name | replace('_', ' ') | title }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

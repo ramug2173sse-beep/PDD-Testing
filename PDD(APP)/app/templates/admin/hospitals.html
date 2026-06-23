@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Manage Hospitals - Admin{% endblock %}
+
+{% block content %}
+<div class="container admin-container">
+    <div class="admin-back"><a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline btn-sm">Dashboard</a>
+    </div>
+    <div class="page-header">
+        <h1>Manage Hospitals</h1>
+        <a href="{{ url_for('admin.add_hospital') }}" class="btn btn-primary">Add
+            Hospital</a>
+    </div>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Emergency</th>
+                <th>Rating</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for h in hospitals %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td><strong>{{ h.name }}</strong></td>
+                <td>{{ h.city }}</td>
+                <td>{{ h.state }}</td>
+                <td>{% if h.emergency %}<span class="badge badge-danger">Yes</span>{% else %}-{% endif %}</td>
+                <td>{{ h.rating }}</td>
+                <td>
+                    <a href="{{ url_for('admin.edit_hospital', hospital_id=h.id) }}"
+                        class="btn btn-xs btn-outline">Edit</a>
+                    <form action="{{ url_for('admin.delete_hospital', hospital_id=h.id) }}" method="POST"
+                        style="display:inline" onsubmit="return confirm('Delete {{ h.name }}?')">
+                        <button class="btn btn-xs btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

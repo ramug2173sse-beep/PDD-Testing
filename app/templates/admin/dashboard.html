@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - SMAT AI{% endblock %}
+
+{% block content %}
+<div class="container admin-container">
+    <div class="admin-header">
+        <h1>Admin Dashboard</h1>
+        <span class="admin-badge">Administrator</span>
+    </div>
+
+    <!-- Stats -->
+    <div class="admin-stats-grid">
+        <div class="astat users">
+            <div class="astat-icon"></div>
+            <div class="astat-val">{{ stats.users }}</div>
+            <div class="astat-label">Users</div>
+        </div>
+        <div class="astat diseases">
+            <div class="astat-icon"></div>
+            <div class="astat-val">{{ stats.diseases }}</div>
+            <div class="astat-label">Diseases</div>
+        </div>
+        <div class="astat symptoms">
+            <div class="astat-icon"></div>
+            <div class="astat-val">{{ stats.symptoms }}</div>
+            <div class="astat-label">Symptoms</div>
+        </div>
+        <div class="astat hospitals">
+            <div class="astat-icon"></div>
+            <div class="astat-val">{{ stats.hospitals }}</div>
+            <div class="astat-label">Hospitals</div>
+        </div>
+        <div class="astat predictions">
+            <div class="astat-icon"></div>
+            <div class="astat-val">{{ stats.predictions }}</div>
+            <div class="astat-label">Predictions</div>
+        </div>
+        <div class="astat history">
+            <div class="astat-icon"></div>
+            <div class="astat-val">{{ stats.history }}</div>
+            <div class="astat-label">Records</div>
+        </div>
+    </div>
+
+    <!-- Admin Nav Links -->
+    <div class="admin-nav-cards">
+        <a href="{{ url_for('admin.users') }}" class="admin-nav-card">
+            Manage Users
+        </a>
+        <a href="{{ url_for('admin.diseases') }}" class="admin-nav-card">
+            Manage Diseases
+        </a>
+        <a href="{{ url_for('admin.symptoms') }}" class="admin-nav-card">
+            Manage Symptoms
+        </a>
+        <a href="{{ url_for('admin.hospitals') }}" class="admin-nav-card">
+            Manage Hospitals
+        </a>
+        <a href="{{ url_for('admin.predictions') }}" class="admin-nav-card">
+            All Predictions
+        </a>
+    </div>
+
+    <div class="admin-grid">
+        <!-- Top Diseases -->
+        {% if top_diseases %}
+        <div class="admin-card">
+            <h3>Top Predicted Diseases</h3>
+            {% for d in top_diseases %}
+            <div class="top-disease-row">
+                <span>{{ loop.index }}. {{ d.predicted_disease_name }}</span>
+                <span class="badge badge-primary">{{ d.count }} predictions</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Recent Users -->
+        <div class="admin-card">
+            <h3>Recent Users</h3>
+            {% for u in recent_users %}
+            <div class="recent-user-row">
+                <div class="ru-avatar">{{ u.username[0].upper() }}</div>
+                <div>
+                    <strong>{{ u.username }}</strong>
+                    <small>{{ u.email }}</small>
+                </div>
+                <span class="badge {% if u.is_active %}badge-success{% else %}badge-danger{% endif %}">
+                    {{ 'Active' if u.is_active else 'Inactive' }}
+                </span>
+            </div>
+            {% endfor %}
+            <a href="{{ url_for('admin.users') }}" class="btn btn-outline btn-sm mt-2">View All Users</a>
+        </div>
+
+        <!-- Recent Predictions -->
+        <div class="admin-card full-width">
+            <h3>Recent Predictions</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Disease</th>
+                        <th>Confidence</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in recent_predictions %}
+                    <tr>
+                        <td>{{ p.username }}</td>
+                        <td>{{ p.predicted_disease_name or '-' }}</td>
+                        <td>{{ (p.confidence_score or 0) | round(1) }}%</td>
+                        <td>{{ p.created_at.strftime('%d %b %Y') if p.created_at else '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

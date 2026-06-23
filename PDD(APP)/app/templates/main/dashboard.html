@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - SMAT AI{% endblock %}
+
+{% block content %}
+<div class="container dashboard-container">
+    <div class="page-header">
+        <h1>My Dashboard</h1>
+        <a href="{{ url_for('main.checker') }}" class="btn btn-primary">
+            New Check
+        </a>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="quick-stats">
+        <div class="qs-card">
+            <div class="qs-data">
+                <div class="qs-number">{{ predictions_count }}</div>
+                <div class="qs-label">Predictions Made</div>
+            </div>
+        </div>
+        <div class="qs-card">
+            <div class="qs-data">
+                <div class="qs-number">{{ history_count }}</div>
+                <div class="qs-label">Medical Records</div>
+            </div>
+        </div>
+        <div class="qs-card">
+            <div class="qs-data">
+                <div class="qs-number">{{ current_user.blood_group or '–' }}</div>
+                <div class="qs-label">Blood Group</div>
+            </div>
+        </div>
+        <div class="qs-card">
+            <div class="qs-data">
+                <div class="qs-number">{{ current_user.age or '–' }}</div>
+                <div class="qs-label">Age</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- Profile Summary -->
+        <div class="dash-card profile-card">
+            <h3>My Profile</h3>
+            <div class="profile-info">
+                <div class="profile-avatar">{{ (current_user.full_name or current_user.username)[0].upper() }}</div>
+                <div class="profile-details">
+                    <h4>{{ current_user.full_name or current_user.username }}</h4>
+                    <p>{{ current_user.email }}</p>
+                    {% if current_user.gender %}<p>{{ current_user.gender }}</p>{%
+                    endif %}
+                    {% if current_user.phone %}<p>{{ current_user.phone }}</p>{% endif %}
+                </div>
+            </div>
+            <a href="{{ url_for('auth.profile') }}" class="btn btn-outline btn-sm mt-2">
+                Edit Profile
+            </a>
+        </div>
+
+        <!-- Recent Predictions -->
+        <div class="dash-card">
+            <h3>Recent Predictions</h3>
+            {% if recent_predictions %}
+            <ul class="recent-list">
+                {% for p in recent_predictions %}
+                <li class="recent-item">
+                    <div class="ri-disease">
+                        <strong>{{ p.predicted_disease_name or 'Unknown' }}</strong>
+                        <small>{{ p.created_at.strftime('%d %b %Y') if p.created_at else '' }}</small>
+                    </div>
+                    <div class="ri-conf">{{ (p.confidence_score or 0) | round(0) | int }}%</div>
+                    <a href="{{ url_for('main.results', pred_id=p.id) }}" class="btn btn-xs btn-outline">View</a>
+                </li>
+                {% endfor %}
+            </ul>
+            <a href="{{ url_for('main.history') }}" class="btn btn-outline btn-sm">View All History</a>
+            {% else %}
+            <div class="empty-state-sm">
+                <p>No predictions yet.</p>
+                <a href="{{ url_for('main.checker') }}" class="btn btn-primary btn-sm">Start Checking</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="dash-card">
+            <h3>Quick Actions</h3>
+            <div class="quick-actions-grid">
+                <a href="{{ url_for('main.checker') }}" class="qa-btn">
+                    <span>Symptom Checker</span>
+                </a>
+                <a href="{{ url_for('main.hospitals') }}" class="qa-btn">
+                    <span>Find Hospitals</span>
+                </a>
+                <a href="{{ url_for('main.history') }}" class="qa-btn">
+                    <span>My History</span>
+                </a>
+                <a href="{{ url_for('main.diseases') }}" class="qa-btn">
+                    <span>Disease Info</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

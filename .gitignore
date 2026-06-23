@@ -1,0 +1,34 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+*.log
+.env
+.env.*
+instance/
+venv/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Node/Next.js/Build outputs
+node_modules/
+.next/
+dist/
+
+# Large binaries/zips/executables
+*.zip
+*.exe
+
+# Database data
+mysql_data/
+
+# Android build outputs and caches
+.gradle/
+.kotlin/
+local.properties
+build/

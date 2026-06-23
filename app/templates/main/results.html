@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% block title %}Prediction Results - SMAT AI{% endblock %}
+
+{% block content %}
+<div class="results-container container">
+    <div class="results-header">
+        <a href="{{ url_for('main.checker') }}" class="btn btn-outline btn-sm">
+            Check Again
+        </a>
+        <h1>Prediction Results</h1>
+        <small class="text-muted">{{ prediction.created_at.strftime('%d %b %Y, %I:%M %p') if prediction.created_at else
+            '' }}</small>
+    </div>
+
+    <div class="results-grid">
+        <!-- Primary Prediction Card -->
+        <div class="result-primary-card">
+            <div
+                class="result-badge {% if prediction.confidence_score > 70 %}high{% elif prediction.confidence_score > 40 %}medium{% else %}low{% endif %}">
+                {{ 'High' if prediction.confidence_score > 70 else 'Medium' if prediction.confidence_score > 40 else
+                'Low' }} Confidence
+            </div>
+            <h2 class="predicted-disease">{{ prediction.predicted_disease_name }}</h2>
+            <div class="confidence-bar-container">
+                <div class="confidence-bar">
+                    <div class="confidence-fill" data-width="{{ prediction.confidence_score }}%"></div>
+                </div>
+                <span class="confidence-pct">{{ prediction.confidence_score | round(1) }}% match</span>
+            </div>
+            {% if prediction.second_prediction %}
+            <div class="alt-predictions">
+                <h4>Other Possibilities:</h4>
+                <div class="alt-item">
+                    <span>{{ prediction.second_prediction }}</span>
+                    <span class="alt-pct">{{ prediction.second_confidence | round(1) }}%</span>
+                </div>
+                {% if prediction.third_prediction %}
+                <div class="alt-item">
+                    <span>{{ prediction.third_prediction }}</span>
+                    <span class="alt-pct">{{ prediction.third_confidence | round(1) }}%</span>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+            <div class="disclaimer-box">
+                <strong>Medical Disclaimer:</strong> This is an AI prediction only. Always consult a qualified physician
+                for proper diagnosis and treatment.
+            </div>
+        </div>
+
+        <!-- Your Symptoms -->
+        <div class="result-card">
+            <h3>Your Symptoms ({{ user_symptoms | length }})</h3>
+            <div class="symptoms-pills">
+                {% for s in user_symptoms %}
+                <span class="pill-badge">{{ s | replace('_', ' ') | title }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Disease Info -->
+        {% if disease %}
+        <div class="result-card disease-info-card">
+            <h3>About {{ disease.name }}</h3>
+            <div class="disease-meta">
+                <span class="meta-tag"><i class="fas fa-tag"></i> {{ disease.category }}</span>
+                <span class="meta-tag severity-{{ disease.severity }}"><i class="fas fa-exclamation-triangle"></i> {{
+                    disease.severity | title }}</span>
+                <span class="meta-tag"><i class="fas fa-user-md"></i> {{ disease.specialist_required }}</span>
+                {% if disease.is_contagious %}
+                <span class="meta-tag contagious"><i class="fas fa-biohazard"></i> Contagious</span>
+                {% endif %}
+            </div>
+            <p>{{ disease.description }}</p>
+            {% if disease.treatment %}
+            <div class="info-section">
+                <h4>Treatment</h4>
+                <p>{{ disease.treatment }}</p>
+            </div>
+            {% endif %}
+            {% if disease.prevention %}
+            <div class="info-section">
+                <h4>Prevention</h4>
+                <p>{{ disease.prevention }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Disease Symptoms -->
+        {% if disease_symptoms %}
+        <div class="result-card">
+            <h3>Common Symptoms of {{ prediction.predicted_disease_name }}</h3>
+            <div class="ds-grid">
+                {% for s in disease_symptoms %}
+                <span class="ds-tag {{ s.severity_level }} {% if s.name in user_symptoms %}matched{% endif %}">
+                    {% if s.name in user_symptoms %}<i class="fas fa-check"></i>{% endif %}
+                    {{ s.name | replace('_', ' ') | title }}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Hospital Recommendations -->
+        {% if hospitals %}
+        <div class="result-card full-width">
+            <h3>Recommended Hospitals
+                {% if disease %}<small class="text-muted">— {{ disease.specialist_required }}</small>{% endif %}
+            </h3>
+            <div class="hospitals-grid">
+                {% for h in hospitals %}
+                <div class="hospital-card">
+                    <div class="hc-header">
+                        <h4>{{ h.name }}</h4>
+                        {% if h.emergency %}<span class="emergency-badge"><i class="fas fa-ambulance"></i> 24/7
+                            Emergency</span>{% endif %}
+                    </div>
+                    <p class="hc-address"><i class="fas fa-map-marker-alt"></i> {{ h.address }}, {{ h.city }}, {{
+                        h.state }}</p>
+                    <p class="hc-phone"><i class="fas fa-phone"></i> {{ h.phone }}</p>
+                    <div class="hc-rating">
+                        {% for i in range(5) %}
+                        <i class="fas fa-star {% if i < h.rating | int %}filled{% endif %}"></i>
+                        {% endfor %}
+                        <span>{{ h.rating }}</span>
+                    </div>
+                    <div class="hc-specialties">
+                        {% for spec in h.specialties.split(',')[:3] %}
+                        <span class="spec-tag">{{ spec.strip() }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Add to Medical History -->
+        <div class="result-card">
+            <h3>Add to Medical History</h3>
+            <form action="{{ url_for('main.add_history') }}" method="POST">
+                <input type="hidden" name="prediction_id" value="{{ prediction.id }}">
+                <input type="hidden" name="disease_name" value="{{ prediction.predicted_disease_name }}">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Diagnosis Date</label>
+                        <input type="date" name="diagnosis_date" class="form-control" value="{{ '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Recovery Status</label>
+                        <select name="recovery_status" class="form-control form-select">
+                            <option value="recovering">Recovering</option>
+                            <option value="recovered">Recovered</option>
+                            <option value="ongoing">Ongoing</option>
+                            <option value="chronic">Chronic</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Doctor Visited</label>
+                    <input type="text" name="doctor_visited" class="form-control" placeholder="Doctor's name">
+                </div>
+                <div class="form-group">
+                    <label>Medications</label>
+                    <input type="text" name="medications" class="form-control"
+                        placeholder="e.g. Paracetamol, Antibiotics">
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea name="notes" class="form-control" rows="2"
+                        placeholder="Any additional notes..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">
+                    Save to History
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

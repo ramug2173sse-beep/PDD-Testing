@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} Disease - Admin{% endblock %}
+
+{% block content %}
+<div class="container admin-container" style="max-width:700px">
+    <div class="admin-back"><a href="{{ url_for('admin.diseases') }}" class="btn btn-outline btn-sm">Back</a></div>
+    <h1>{{ action }} Disease</h1>
+    <form method="POST" class="admin-form">
+        <div class="form-group">
+            <label>Name *</label>
+            <input type="text" name="name" class="form-control" required value="{{ disease.name if disease else '' }}">
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Category</label>
+                <input type="text" name="category" class="form-control"
+                    value="{{ disease.category if disease else '' }}" placeholder="e.g. Respiratory">
+            </div>
+            <div class="form-group">
+                <label>Severity</label>
+                <select name="severity" class="form-control form-select">
+                    {% for s in ['mild','moderate','severe','critical'] %}
+                    <option value="{{ s }}" {% if disease and disease.severity==s %}selected{% endif %}>{{ s | title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" class="form-control"
+                rows="3">{{ disease.description if disease else '' }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Treatment</label>
+            <textarea name="treatment" class="form-control"
+                rows="3">{{ disease.treatment if disease else '' }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Prevention</label>
+            <textarea name="prevention" class="form-control"
+                rows="2">{{ disease.prevention if disease else '' }}</textarea>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Specialist Required</label>
+                <input type="text" name="specialist_required" class="form-control"
+                    value="{{ disease.specialist_required if disease else '' }}">
+            </div>
+            <div class="form-group form-check-group">
+                <label class="form-check">
+                    <input type="checkbox" name="is_contagious" {% if disease and disease.is_contagious %}checked{%
+                        endif %}>
+                    <span>Contagious</span>
+                </label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">{{ action }} Disease</button>
+    </form>
+</div>
+{% endblock %}

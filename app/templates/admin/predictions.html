@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}All Predictions - Admin{% endblock %}
+
+{% block content %}
+<div class="container admin-container">
+    <div class="admin-back"><a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline btn-sm">Dashboard</a>
+    </div>
+    <h1>All Predictions</h1>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Disease</th>
+                <th>Confidence</th>
+                <th>Symptoms</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in predictions %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ p.username }} <small class="text-muted">({{ p.email }})</small></td>
+                <td><strong>{{ p.predicted_disease_name or '-' }}</strong></td>
+                <td>{{ (p.confidence_score or 0) | round(1) }}%</td>
+                <td><small>{{ (p.symptoms_provided or '-')[:50] }}{% if p.symptoms_provided and
+                        p.symptoms_provided|length > 50 %}...{% endif %}</small></td>
+                <td><small>{{ p.created_at.strftime('%d %b %Y, %H:%M') if p.created_at else '-' }}</small></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

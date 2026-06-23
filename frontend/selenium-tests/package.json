@@ -1,0 +1,15 @@
+{
+  "name": "gsms-selenium-tests",
+  "version": "1.0.0",
+  "description": "Selenium E2E Tests for GSMS",
+  "main": "tests/login.test.js",
+  "scripts": {
+    "test": "mocha tests/**/*.test.js --timeout 15000",
+    "login": "mocha tests/login.test.js --timeout 15000"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "selenium-webdriver": "^4.22.0",
+    "mocha": "^10.4.0"
+  }
+}

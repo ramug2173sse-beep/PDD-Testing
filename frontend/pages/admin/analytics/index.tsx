@@ -1,8 +1,8 @@
-import NavBar from '../../components/NavBar'
-import Footer from '../../components/Footer'
+import NavBar from '../../../components/NavBar'
+import Footer from '../../../components/Footer'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { fetchCurrentUser, getToken } from '../../utils/auth'
+import { fetchCurrentUser, getToken } from '../../../utils/auth'
 import { useRouter } from 'next/router'
 
 type TrendPoint = { date: string; count: number }

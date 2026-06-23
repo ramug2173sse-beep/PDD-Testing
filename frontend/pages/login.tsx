@@ -104,6 +104,7 @@ export default function LoginPage() {
             <div className="space-y-1.5">
               <label className="text-xs text-slate-350 font-bold uppercase tracking-wider block">Email or Mobile Number</label>
               <input
+                id="email"
                 type="text"
                 placeholder="doctor@gsmat.com / john@gmail.com"
                 value={identifier}
@@ -122,6 +123,7 @@ export default function LoginPage() {
                 </button>
               </div>
               <input
+                id="password"
                 type="password"
                 placeholder="••••••••"
                 value={password}
@@ -156,6 +158,7 @@ export default function LoginPage() {
                 {captchaOptions.map((opt, idx) => (
                   <button
                     key={idx}
+                    id={`captcha-option-${idx}`}
                     type="button"
                     onClick={() => handleCaptchaSelect(idx)}
                     className={`p-3 rounded-lg border text-xl flex items-center justify-center transition duration-150 ${
@@ -175,6 +178,7 @@ export default function LoginPage() {
 
             {/* Submit */}
             <button
+              id="login-button"
               type="submit"
               disabled={loading}
               className={`w-full py-3.5 rounded-xl font-extrabold text-sm transition duration-150 uppercase tracking-widest ${

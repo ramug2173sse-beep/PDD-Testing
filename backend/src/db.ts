@@ -43,7 +43,7 @@ const dbStore: {
       full_name: 'System Administrator',
       email: 'admin@gsmat.com',
       phone: '+919999999999',
-      password_hash: '$2b$10$C6EX5b3lpw0ORgHXzpGdEehPuVffcSLa/lNesBqm1hOpEdgk3An46', // password123
+      password_hash: '$2b$10$v7qqP8TMGelQub1YxPH19eOpCJ8k5QrDKNzmBplQNzv2GwkPB.5ju', // password123
       age: 35,
       gender: 'male',
       address: 'Admin Center, Metropolis',
@@ -56,7 +56,7 @@ const dbStore: {
       full_name: 'John Doe',
       email: 'john@gmail.com',
       phone: '+918888888888',
-      password_hash: '$2b$10$C6EX5b3lpw0ORgHXzpGdEehPuVffcSLa/lNesBqm1hOpEdgk3An46', // password123
+      password_hash: '$2b$10$v7qqP8TMGelQub1YxPH19eOpCJ8k5QrDKNzmBplQNzv2GwkPB.5ju', // password123
       age: 28,
       gender: 'male',
       address: '45 Park Street, Chennai',

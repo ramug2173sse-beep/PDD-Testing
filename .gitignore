@@ -24,6 +24,7 @@ out/
 # Large binaries/zips/executables
 *.zip
 *.exe
+*.xlsx
 
 # Database data
 mysql_data/

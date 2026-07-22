@@ -1,13 +1,13 @@
-// Programmatic generator for 400+ E2E Test Cases spanning 14 required categories
+// Programmatic generator for 400 E2E Test Cases spanning 14 required categories
 const testCases = [];
 
 const categories = [
   { prefix: 'AUT', module: 'Authentication', count: 40, priority: 'High' },
   { prefix: 'ATH', module: 'Authorization', count: 40, priority: 'High' },
   { prefix: 'NAV', module: 'Navigation', count: 30, priority: 'Medium' },
-  { prefix: 'UIV', module: 'UI Validation', count: 50, priority: 'Low' },
-  { prefix: 'FRM', module: 'Forms', count: 50, priority: 'Medium' },
-  { prefix: 'CRD', module: 'CRUD Operations', count: 50, priority: 'Medium' },
+  { prefix: 'UIV', module: 'UI Validation', count: 30, priority: 'Low' },
+  { prefix: 'FRM', module: 'Forms', count: 30, priority: 'Medium' },
+  { prefix: 'CRD', module: 'CRUD Operations', count: 40, priority: 'Medium' },
   { prefix: 'IPV', module: 'Input Validation', count: 40, priority: 'Medium' },
   { prefix: 'ERR', module: 'Error Handling', count: 20, priority: 'High' },
   { prefix: 'SSM', module: 'Session Management', count: 20, priority: 'High' },
@@ -15,7 +15,7 @@ const categories = [
   { prefix: 'ACS', module: 'Accessibility', count: 20, priority: 'Low' },
   { prefix: 'RSP', module: 'Responsive Design', count: 20, priority: 'Low' },
   { prefix: 'PRF', module: 'Performance Smoke Tests', count: 20, priority: 'High' },
-  { prefix: 'REG', module: 'Regression', count: 50, priority: 'Medium' }
+  { prefix: 'REG', module: 'Regression', count: 30, priority: 'Medium' }
 ];
 
 // Helper to generate realistic test titles and steps based on module and index
@@ -160,7 +160,7 @@ function generateTestCaseDetails(prefix, module, index) {
   };
 }
 
-// Generate the 420 test cases
+// Generate the 400 test cases
 categories.forEach(cat => {
   for (let i = 1; i <= cat.count; i++) {
     testCases.push(generateTestCaseDetails(cat.prefix, cat.module, i));

@@ -4,7 +4,8 @@
   "description": "Selenium E2E Test Suite for GSMS",
   "main": "tests/e2e.test.js",
   "scripts": {
-    "test": "mocha tests/**/*.test.js --timeout 180000"
+    "test": "mocha tests/**/*.test.js --timeout 180000",
+    "load-test": "node load-test.js"
   },
   "devDependencies": {
     "autocannon": "^8.0.0",

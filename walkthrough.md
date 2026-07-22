@@ -83,3 +83,36 @@ All test execution outputs and reports are located under [gsms-mobile/appium-tes
 - **Mocha Execution Logs**: [task-357.log](file:///C:/Users/ramug/.gemini/antigravity-ide/brain/1a60162f-31c4-4750-a5be-39e0112e606b/.system_generated/tasks/task-357.log)
 - **Appium Server Output**: [task-344.log](file:///C:/Users/ramug/.gemini/antigravity-ide/brain/1a60162f-31c4-4750-a5be-39e0112e606b/.system_generated/tasks/task-344.log)
 - **Excel E2E Analysis Report**: [E2E_Test_Report.xlsx](file:///c:/Users/ramug/OneDrive/Desktop/APP(PDD)/gsms-mobile/appium-tests/E2E_Test_Report.xlsx)
+
+---
+
+## ⚡ Part 3: Baseline/Load Testing Validation
+
+We have integrated a dedicated programmatic load testing script under the [automation/load-test.js](file:///c:/Users/ramug/Downloads/SMAT/SMAT/automation/load-test.js) suite using `autocannon`. The test simulates 100 concurrent virtual users hitting the system continuously for 1 minute.
+
+### Accomplished Work
+
+1. **Load Test Infrastructure**:
+   - Implemented a programmatic load tester inside `automation/load-test.js`.
+   - Exposed it through the `npm run load-test` command.
+2. **Benchmark Run Execution**:
+   - Launched the Express/TypeScript API backend server locally.
+   - Executed load testing with 100 connections targeting the `/api/hospitals` endpoint.
+   - Collected and parsed real-time performance latency percentiles and throughput.
+
+### Load Test Execution Metrics
+
+| Performance Metric | Measured Value |
+| :--- | :--- |
+| **Target API URL** | `http://localhost:4000/api/hospitals` |
+| **Total Requests Sent** | **176,352** requests |
+| **Execution Duration** | 60.12 seconds |
+| **Concurrent Users (Connections)** | **100** |
+| **Average Requests per Second (RPS)** | 🟢 **2,938 req/sec** |
+| **Average Response Latency** | 🟢 **33.55 ms** |
+| **Minimum Response Latency** | **1.00 ms** |
+| **Maximum Response Latency** | **315.00 ms** |
+| **Median (p50) Latency** | **30.00 ms** |
+| **99th Percentile (p99) Latency** | **85.00 ms** |
+| **Total Data Read / Throughput** | **384 MB** (6.10 MB/sec) |
+

@@ -1,0 +1,2 @@
+# Kept for driver binary storage if manual chromedriver/geckodriver is needed.
+# Note: Selenium 4+ automatically manages drivers on-the-fly via Selenium Manager.

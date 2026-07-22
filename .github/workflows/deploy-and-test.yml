@@ -125,7 +125,7 @@ jobs:
 
       # Stage 11: Upload Artifacts (Excel, HTML, Logs, Screenshots)
       - name: Upload Test Automation Reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: E2E_Automation_Reports

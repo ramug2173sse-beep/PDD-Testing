@@ -140,3 +140,15 @@ jobs:
           else
             echo "Summary file not found."
           fi
+
+      # Stage 13: Store Historical Results
+      - name: Store Historical Results
+        if: always()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          mkdir -p history
+          cp -r automation/reports history/${{ github.run_id }} || true
+          git add history/
+          git commit -m "chore: archive test history for run ${{ github.run_id }} [skip ci]" || true
+          git push origin main || true

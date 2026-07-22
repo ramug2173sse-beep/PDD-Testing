@@ -27,6 +27,7 @@ import androidx.navigation3.runtime.NavKey
 import com.example.gsmsmobile.data.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 
 // --- Tabs Enum ---
 enum class AppTab(val title: String, val icon: ImageVector) {
@@ -673,7 +674,7 @@ fun TabPredict(repository: DataRepository, onSignInClick: () -> Unit) {
                             )
                         ) {
                             Icon(
-                                imageVector = if (isListening) Icons.Default.Warning else Icons.Default.Play, 
+                                imageVector = if (isListening) Icons.Default.Warning else Icons.Default.PlayArrow, 
                                 contentDescription = "Voice Input",
                                 tint = if (isListening) Color.Red else MaterialTheme.colorScheme.primary
                             )
@@ -1050,7 +1051,7 @@ fun TabAppointments(repository: DataRepository, onSignInClick: () -> Unit) {
                                 value = appointmentDate,
                                 onValueChange = { appointmentDate = it },
                                 label = { Text("Date (YYYY-MM-DD)", fontSize = 12.sp) },
-                                modifier = Modifier.weight(1.f),
+                                modifier = Modifier.weight(1f),
                                 singleLine = true
                             )
                             Spacer(modifier = Modifier.width(8.dp))
@@ -1058,7 +1059,7 @@ fun TabAppointments(repository: DataRepository, onSignInClick: () -> Unit) {
                                 value = appointmentTime,
                                 onValueChange = { appointmentTime = it },
                                 label = { Text("Time Slot", fontSize = 12.sp) },
-                                modifier = Modifier.weight(1.f),
+                                modifier = Modifier.weight(1f),
                                 singleLine = true
                             )
                         }

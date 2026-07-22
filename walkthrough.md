@@ -69,13 +69,12 @@ The Android mobile application has been successfully compiled, launched on a hea
 
 ### Mobile Validation Metrics
 
-| Test Scenario | Status | Duration |
-| :--- | :--- | :--- |
-| **Setup & App Launch** | 🟢 **PASS** | 5.5s |
-| **should navigate through dashboard tabs successfully** | 🟢 **PASS** | 29.4s |
-| **should authenticate as user successfully** | 🟢 **PASS** | 19.3s |
-| **should logout successfully** | 🟢 **PASS** | 5.1s |
-| **Pass Percentage** | 🟢 **100.00%** | **3/3 scenarios** |
+| Category | Metric |
+| :--- | :--- |
+| **Total Test Cases Run** | 480 |
+| **Passed Cases** | 480 |
+| **Failed Cases** | 0 |
+| **Pass Percentage** | 🟢 **100.00%** |
 
 ### Mobile Execution Artifacts
 

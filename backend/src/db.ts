@@ -13,6 +13,25 @@ const pool = new Pool({
 
 let useMock = false
 
+function cloneMockResult(obj: any): any {
+  if (obj === null || typeof obj !== 'object') {
+    return obj
+  }
+  if (obj instanceof Date) {
+    return new Date(obj.getTime())
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(item => cloneMockResult(item))
+  }
+  const cloned: any = {}
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      cloned[key] = cloneMockResult(obj[key])
+    }
+  }
+  return cloned
+}
+
 pool.on('error', (err) => {
   console.error('Unexpected error on idle Postgres client', err)
 })
@@ -466,10 +485,10 @@ export async function query(text: string, params: any[] = []) {
     rows = list.sort((a,b) => b.rating - a.rating)
   }
   else if (cleanedText.startsWith('SELECT id, name, city, total_beds, available_beds, icu_beds, available_icu, ventilators, available_ventilators FROM hospitals ORDER BY name')) {
-    rows = dbStore.hospitals.sort((a,b) => a.name.localeCompare(b.name))
+    rows = [...dbStore.hospitals].sort((a,b) => a.name.localeCompare(b.name))
   }
   else if (cleanedText.startsWith('SELECT id, name, address, city, phone, total_beds, available_beds, icu_beds, available_icu, ventilators, available_ventilators FROM hospitals ORDER BY name LIMIT 500')) {
-    rows = dbStore.hospitals.sort((a,b) => a.name.localeCompare(b.name))
+    rows = [...dbStore.hospitals].sort((a,b) => a.name.localeCompare(b.name))
   }
   else if (cleanedText.startsWith('UPDATE hospitals SET total_beds=$1, available_beds=$2, icu_beds=$3, available_icu=$4, ventilators=$5, available_ventilators=$6 WHERE id=$7 RETURNING')) {
     const id = Number(params[6])
@@ -657,7 +676,7 @@ export async function query(text: string, params: any[] = []) {
   }
   // 11. Diseases (New)
   else if (cleanedText.startsWith('SELECT * FROM diseases ORDER BY name') || cleanedText.startsWith('SELECT id, name, description, category, severity, specialist_required, is_contagious FROM diseases')) {
-    rows = dbStore.diseases.sort((a,b) => a.name.localeCompare(b.name))
+    rows = [...dbStore.diseases].sort((a,b) => a.name.localeCompare(b.name))
   }
   else if (cleanedText.startsWith('SELECT * FROM diseases WHERE id = $1') || cleanedText.startsWith('SELECT * FROM diseases WHERE id=$1')) {
     const dis = dbStore.diseases.find(d => d.id === Number(params[0]))
@@ -686,7 +705,7 @@ export async function query(text: string, params: any[] = []) {
   }
 
   rowCount = rows.length
-  return { rows, rowCount }
+  return { rows: cloneMockResult(rows), rowCount }
 }
 
 export default pool

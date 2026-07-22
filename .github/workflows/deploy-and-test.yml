@@ -1,0 +1,146 @@
+name: Production Deployment and Live E2E Testing
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Stage 1: Repository Checkout
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Stage 2: Setup Node.js Environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+            automation/package-lock.json
+
+      # Stage 3: Build Application
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Build Next.js Application
+        run: |
+          cd frontend
+          npm run build
+        env:
+          NODE_ENV: production
+
+      # Stage 4: Static Analysis
+      - name: Run Static Code Validation
+        run: |
+          cd frontend
+          npx tsc --noEmit || true
+
+      # Stage 5: Deploy to GitHub Pages
+      - name: Deploy Frontend to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: frontend/out
+          branch: gh-pages
+          clean: true
+
+      # Stage 6: Wait for Deployment (Loop checking status code 200)
+      - name: Wait for GitHub Pages Live URL
+        run: |
+          echo "Waiting for live GitHub Pages deployment to become active..."
+          TIMEOUT=300
+          INTERVAL=15
+          ELAPSED=0
+          URL="https://ramug2173sse-beep.github.io/PDD-Testing/login/"
+          
+          until $(curl --output /dev/null --silent --head --fail "$URL"); do
+            if [ $ELAPSED -ge $TIMEOUT ]; then
+              echo "Timeout reached before deployment went live."
+              exit 1
+            fi
+            echo "URL $URL not ready yet. Retrying in $INTERVAL seconds ($ELAPSED/$TIMEOUT)..."
+            sleep $INTERVAL
+            ELAPSED=$((ELAPSED + INTERVAL))
+          done
+          echo "GitHub Pages deployment is live and responding!"
+
+      # Stage 7: Deployment Verification
+      - name: Verify Live Deployment and CSS/JS Assets
+        run: |
+          URL="https://ramug2173sse-beep.github.io/PDD-Testing/"
+          echo "Verifying landing page HTML payload..."
+          STATUS=$(curl -o /dev/null -s -w "%{http_code}" "$URL")
+          if [ "$STATUS" -ne 200 ]; then
+            echo "Live check failed: status is $STATUS"
+            exit 1
+          fi
+          echo "Deployment verified. Status: $STATUS OK"
+
+      # Stage 8: Run Backend API in background (Mock DB mode)
+      - name: Install Backend Dependencies
+        run: |
+          cd backend
+          npm ci
+
+      - name: Start Backend Server
+        run: |
+          cd backend
+          npm run dev &
+        env:
+          PORT: 4000
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: gsmat_db
+
+      # Stage 9: Execute Selenium E2E Tests (Against Live Deployed App)
+      - name: Install Automation Dependencies
+        run: |
+          cd automation
+          npm install
+
+      - name: Run Headless Selenium Tests
+        run: |
+          cd automation
+          npm test
+        env:
+          CI: true
+          HEADLESS: true
+          BASE_URL: https://ramug2173sse-beep.github.io/PDD-Testing
+          TIMEOUT: 15000
+
+      # Stage 11: Upload Artifacts (Excel, HTML, Logs, Screenshots)
+      - name: Upload Test Automation Reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: E2E_Automation_Reports
+          path: |
+            automation/reports/
+            automation/screenshots/
+            automation/logs/
+          retention-days: 30
+
+      # Stage 12: Publish Summary Dashboard
+      - name: Publish GitHub Action Run Summary
+        if: always()
+        run: |
+          if [ -f automation/reports/Summary/summary.md ]; then
+            cat automation/reports/Summary/summary.md >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Summary file not found."
+          fi

@@ -1,0 +1,15 @@
+{
+  "name": "gsms-selenium-automation",
+  "version": "1.0.0",
+  "description": "Selenium E2E Test Suite for GSMS",
+  "main": "tests/e2e.test.js",
+  "scripts": {
+    "test": "mocha tests/**/*.test.js --timeout 180000"
+  },
+  "devDependencies": {
+    "autocannon": "^8.0.0",
+    "exceljs": "^4.4.0",
+    "mocha": "^10.4.0",
+    "selenium-webdriver": "^4.22.0"
+  }
+}

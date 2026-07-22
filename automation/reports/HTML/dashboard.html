@@ -1,0 +1,62 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>E2E Automation Dashboard</title>
+      <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #0b1329; color: #f8fafc; margin: 0; padding: 20px; }
+    .container { max-width: 1200px; margin: 0 auto; background: #0f172a; padding: 30px; border-radius: 16px; border: 1px border #1e293b; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    h1 { color: #ffffff; text-align: center; font-size: 28px; font-weight: 800; margin-top: 0; }
+    h2 { color: #38bdf8; border-bottom: 2px solid #1e293b; padding-bottom: 8px; margin-top: 30px; }
+    .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin: 30px 0; }
+    .card { background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #334155; text-align: center; }
+    .card .val { font-size: 32px; font-weight: 800; color: #ffffff; margin-top: 5px; }
+    .card.pass .val { color: #4ade80; }
+    .card.fail .val { color: #f87171; }
+    .card.rate .val { color: #38bdf8; }
+    .card.skip .val { color: #fbbf24; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #0f172a; border-radius: 8px; overflow: hidden; }
+    th { background: #0f766e; color: white; text-align: left; padding: 12px 15px; font-size: 13px; font-weight: bold; }
+    td { padding: 12px 15px; font-size: 13px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+    tr:nth-child(even) { background-color: #1e293b; }
+    .status { font-weight: bold; padding: 4px 8px; border-radius: 6px; font-size: 11px; text-align: center; display: inline-block; }
+    .status.pass { background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+    .status.fail { background: rgba(248, 113, 113, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+    .status.skip { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+  </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>GSMS Live E2E Automation Dashboard</h1>
+        <div style="text-align: center; font-size: 13px; color: #94a3b8;">
+          Environment: <a href="http://localhost:3000/PDD-Testing" target="_blank" style="color: #38bdf8; text-decoration: none;">http://localhost:3000/PDD-Testing</a> | Tested: 22/7/2026, 5:32:28 pm
+        </div>
+        
+        <div class="metrics">
+          <div class="card">Total Cases<div class="val">470</div></div>
+          <div class="card pass">Passed<div class="val">470</div></div>
+          <div class="card fail">Failed<div class="val">0</div></div>
+          <div class="card skip">Skipped<div class="val">0</div></div>
+          <div class="card rate">Pass Rate<div class="val">100.0%</div></div>
+          <div class="card">Duration<div class="val">14.4s</div></div>
+        </div>
+
+        <h2>Failed Cases Details</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 10%;">ID</th>
+              <th style="width: 15%;">Module</th>
+              <th style="width: 40%;">Test Case Name</th>
+              <th style="width: 35%;">Failure Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="4" style="text-align: center; color: #4ade80; font-weight: bold; padding: 20px;">✓ All test cases executed and passed successfully!</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </body>
+    </html>
+  

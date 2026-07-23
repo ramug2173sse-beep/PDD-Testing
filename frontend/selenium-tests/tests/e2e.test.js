@@ -67,7 +67,7 @@ describe('GSMS Production Live E2E Automation Suite', function () {
     }
   });
 
-  // Loop over the 420 E2E test cases
+  // Loop over the 350 E2E test cases
   testCases.forEach((tc) => {
     it(`${tc.id}: ${tc.name}`, async function () {
       const startTime = Date.now();

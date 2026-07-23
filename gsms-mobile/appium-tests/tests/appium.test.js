@@ -56,7 +56,7 @@ describe('GSMS Android Mobile E2E Automation Suite', function () {
     }
   });
 
-  // Loop over the 480 mobile test cases
+  // Loop over the 350 mobile test cases
   testCases.forEach((tc) => {
     it(`${tc.id}: ${tc.name}`, async function () {
       const startTime = Date.now();

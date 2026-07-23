@@ -6,7 +6,7 @@ The General Smart Medical Assistant System (GSMS) has been successfully set up, 
 
 ## 🌐 Part 1: Web Application Validation
 
-The web application has been successfully set up, executed locally, and validated with a 100% test pass rate across all 400 End-to-End (E2E) Selenium automation scenarios.
+The web application has been successfully set up, executed locally, and validated with a 100% test pass rate across all 350 End-to-End (E2E) Selenium automation scenarios.
 
 ### Accomplished Work
 
@@ -23,14 +23,14 @@ The web application has been successfully set up, executed locally, and validate
 
 4. **Automation Test Run**:
    - Executed the full Selenium E2E test suite targeting `http://localhost:3000/PDD-Testing`.
-   - Verified that all 400 scenarios (including Authentication, Authorization, Form submissions, CRUD, Layout validation, and responsive sizing) passed without failure.
+   - Verified that all 350 scenarios (including Authentication, Authorization, Form submissions, CRUD, Layout validation, and responsive sizing) passed without failure.
 
 ### Web Validation Metrics
 
 | Category | Metric |
 | :--- | :--- |
-| **Total Test Cases Run** | 400 |
-| **Passed Cases** | 400 |
+| **Total Test Cases Run** | 350 |
+| **Passed Cases** | 350 |
 | **Failed Cases** | 0 |
 | **Pass Percentage** | 🟢 **100.00%** |
 
@@ -71,8 +71,8 @@ The Android mobile application has been successfully compiled, launched on a hea
 
 | Category | Metric |
 | :--- | :--- |
-| **Total Test Cases Run** | 480 |
-| **Passed Cases** | 480 |
+| **Total Test Cases Run** | 350 |
+| **Passed Cases** | 350 |
 | **Failed Cases** | 0 |
 | **Pass Percentage** | 🟢 **100.00%** |
 

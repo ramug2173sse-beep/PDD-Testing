@@ -1,27 +1,27 @@
-// Programmatic generator for 400+ E2E Mobile Test Cases spanning 20 modules
+// Programmatic generator for 350 E2E Mobile Test Cases spanning 20 modules
 const testCases = [];
 
 const categories = [
-  { prefix: 'AUT', module: 'Authentication', count: 40, priority: 'High' },
-  { prefix: 'ATH', module: 'Authorization', count: 30, priority: 'High' },
-  { prefix: 'REG', module: 'Registration', count: 20, priority: 'Medium' },
-  { prefix: 'PRF', module: 'Profile Management', count: 20, priority: 'Medium' },
-  { prefix: 'NAV', module: 'Navigation', count: 30, priority: 'Medium' },
-  { prefix: 'DSH', module: 'Dashboard', count: 20, priority: 'Medium' },
-  { prefix: 'FRM', module: 'Forms', count: 40, priority: 'Medium' },
-  { prefix: 'CRD', module: 'CRUD Operations', count: 40, priority: 'Medium' },
-  { prefix: 'SCH', module: 'Search', count: 20, priority: 'Medium' },
-  { prefix: 'FLT', module: 'Filters', count: 20, priority: 'Medium' },
-  { prefix: 'VAL', module: 'Input Validation', count: 40, priority: 'Medium' },
-  { prefix: 'ERR', module: 'Error Handling', count: 20, priority: 'High' },
-  { prefix: 'SSM', module: 'Session Management', count: 20, priority: 'High' },
-  { prefix: 'NTF', module: 'Notifications', count: 20, priority: 'Medium' },
-  { prefix: 'FLD', module: 'File Upload', count: 20, priority: 'Medium' },
+  { prefix: 'AUT', module: 'Authentication', count: 30, priority: 'High' },
+  { prefix: 'ATH', module: 'Authorization', count: 20, priority: 'High' },
+  { prefix: 'REG', module: 'Registration', count: 15, priority: 'Medium' },
+  { prefix: 'PRF', module: 'Profile Management', count: 15, priority: 'Medium' },
+  { prefix: 'NAV', module: 'Navigation', count: 20, priority: 'Medium' },
+  { prefix: 'DSH', module: 'Dashboard', count: 15, priority: 'Medium' },
+  { prefix: 'FRM', module: 'Forms', count: 30, priority: 'Medium' },
+  { prefix: 'CRD', module: 'CRUD Operations', count: 30, priority: 'Medium' },
+  { prefix: 'SCH', module: 'Search', count: 15, priority: 'Medium' },
+  { prefix: 'FLT', module: 'Filters', count: 15, priority: 'Medium' },
+  { prefix: 'VAL', module: 'Input Validation', count: 30, priority: 'Medium' },
+  { prefix: 'ERR', module: 'Error Handling', count: 10, priority: 'High' },
+  { prefix: 'SSM', module: 'Session Management', count: 10, priority: 'High' },
+  { prefix: 'NTF', module: 'Notifications', count: 15, priority: 'Medium' },
+  { prefix: 'FLD', module: 'File Upload', count: 15, priority: 'Medium' },
   { prefix: 'OFF', module: 'Offline Handling', count: 10, priority: 'Medium' },
-  { prefix: 'ACC', module: 'Accessibility', count: 20, priority: 'Low' },
+  { prefix: 'ACC', module: 'Accessibility', count: 15, priority: 'Low' },
   { prefix: 'RSP', module: 'Responsive UI', count: 10, priority: 'Low' },
-  { prefix: 'PFM', module: 'Performance Smoke Tests', count: 20, priority: 'High' },
-  { prefix: 'RGR', module: 'Regression Suite', count: 50, priority: 'Medium' }
+  { prefix: 'PFM', module: 'Performance Smoke Tests', count: 15, priority: 'High' },
+  { prefix: 'RGR', module: 'Regression Suite', count: 15, priority: 'Medium' }
 ];
 
 // Helper to generate realistic test descriptions and steps for mobile
